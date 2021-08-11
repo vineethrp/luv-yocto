@@ -1,0 +1,51 @@
+commit 8e8723a6be548874fe40086a7dc467b5c8fe619b
+Author: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Date:   Wed May 29 08:34:55 2019 +0200
+
+    f2fs: Disable gcc9 -Waddress-of-packed-member
+    
+    Disable the -Wadress-of-packaed-member diagnostic for the grub_f2fs_label
+    function since the result is found to be false postive.
+    
+    A pointer to the 'volume_name' member of 'struct grub_f2fs_superblock' is
+    guaranteed to be aligned as the offset of 'volume_name' within the struct
+    is dividable by the natural alignment on both 32- and 64-bit targets.
+    
+    grub-core/fs/f2fs.c: In function ‘grub_f2fs_label’:
+    grub-core/fs/f2fs.c:1253:60: error: taking address of packed member of ‘struct grub_f2fs_superblock’ may result in an unaligned pointer value [-Werror=address-of-packed-member]
+     1253 |     *label = (char *) grub_f2fs_utf16_to_utf8 (data->sblock.volume_name);
+          |                                                ~~~~~~~~~~~~^~~~~~~~~~~~
+    cc1: all warnings being treated as errors
+    
+    Reported-by: Neil MacLeod <neil@nmacleod.com>
+    Signed-off-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+    Tested-by: Neil MacLeod <neil@nmacleod.com>
+    Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+
+diff --git a/grub-core/fs/f2fs.c b/grub-core/fs/f2fs.c
+index bb28b291b..8a9992ca9 100644
+--- a/grub-core/fs/f2fs.c
++++ b/grub-core/fs/f2fs.c
+@@ -1240,6 +1240,11 @@ grub_f2fs_utf16_to_utf8 (grub_uint16_t *in_buf_le)
+   return out_buf;
+ }
+ 
++#if __GNUC__ >= 9
++#pragma GCC diagnostic push
++#pragma GCC diagnostic ignored "-Waddress-of-packed-member"
++#endif
++
+ static grub_err_t
+ grub_f2fs_label (grub_device_t device, char **label)
+ {
+@@ -1260,6 +1265,10 @@ grub_f2fs_label (grub_device_t device, char **label)
+   return grub_errno;
+ }
+ 
++#if __GNUC__ >= 9
++#pragma GCC diagnostic pop
++#endif
++
+ static grub_err_t
+ grub_f2fs_uuid (grub_device_t device, char **uuid)
+ {
