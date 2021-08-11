@@ -1,7 +1,7 @@
-From a5caa209ba9c29c6421292e7879d2387a2ef39c9 Mon Sep 17 00:00:00 2001
+From 38f64145e3317e0e0a6a0c1c6caef2167ee20338 Mon Sep 17 00:00:00 2001
 From: Matt Fleming <matt.fleming@intel.com>
 Date: Fri, 25 Sep 2015 23:02:18 +0100
-Subject: [PATCH] x86/efi: Fix boot crash by mapping EFI memmap entries
+Subject: [PATCH 6/6] x86/efi: Fix boot crash by mapping EFI memmap entries
  bottom-up at runtime, instead of top-down
 
 Beginning with UEFI v2.5 EFI_PROPERTIES_TABLE was introduced
@@ -81,17 +81,18 @@ Cc: linux-kernel@vger.kernel.org
 Link: http://lkml.kernel.org/r/1443218539-7610-2-git-send-email-matt@codeblueprint.co.uk
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
 ---
- arch/x86/platform/efi/efi.c | 67 ++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 66 insertions(+), 1 deletion(-)
+ arch/x86/platform/efi/efi.c | 64 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 64 insertions(+)
 
 diff --git a/arch/x86/platform/efi/efi.c b/arch/x86/platform/efi/efi.c
-index 1db84c0..6a28ded 100644
+index 8a26e705cb06..9936c55db734 100644
 --- a/arch/x86/platform/efi/efi.c
 +++ b/arch/x86/platform/efi/efi.c
-@@ -705,6 +705,70 @@ out:
+@@ -663,6 +663,70 @@ static bool should_map_region(efi_memory_desc_t *md)
+ 	return false;
  }
  
- /*
++/*
 + * Iterate the EFI memory map in reverse order because the regions
 + * will be mapped top-down. The end result is the same as if we had
 + * mapped things forward, but doesn't require us to change the
@@ -155,20 +156,9 @@ index 1db84c0..6a28ded 100644
 +	return entry;
 +}
 +
-+/*
+ /*
   * Map the efi memory ranges of the runtime services and update new_mmap with
   * virtual addresses.
-  */
-@@ -714,7 +778,8 @@ static void * __init efi_map_regions(int *count, int *pg_shift)
- 	unsigned long left = 0;
- 	efi_memory_desc_t *md;
- 
--	for (p = memmap.map; p < memmap.map_end; p += memmap.desc_size) {
-+	p = NULL;
-+	while ((p = efi_map_next_entry(p))) {
- 		md = p;
- 		if (!(md->attribute & EFI_MEMORY_RUNTIME)) {
- #ifdef CONFIG_X86_64
 -- 
-1.9.1
+2.25.1
 

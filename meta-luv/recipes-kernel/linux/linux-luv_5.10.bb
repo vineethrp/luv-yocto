@@ -53,7 +53,7 @@
 
 KBRANCH="master"
 
-LIC_FILES_CHKSUM = "file://COPYING;md5=bbea815ee2795b2f4230826c0c6b8814"
+LIC_FILES_CHKSUM = "file://COPYING;md5=6bc538ed5bd9a7fc9398086aedcd7e46"
 
 inherit kernel
 require recipes-kernel/linux/linux-yocto.inc
@@ -66,20 +66,14 @@ KERNEL_FEATURES_remove= " features/debug/printk.scc \
 # tree if you do not want to build from Linus' tree.
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git;protocol=git;branch=${KBRANCH};name=machine"
 
-# These patches are under discussion on ML
-SRC_URI += "file://0001-serial-SPCR-check-bit-width-for-the-16550-UART.patch  \
-           "
-
 # Detect illegal accesses to EFI regions (like EFI_CONVENTIONAL_MEMORY,
 # EFI_LOADER_CODE/DATA, EFI_BOOT_SERVICES_CODE/DATA) by firmware.
-SRC_URI += "file://0001-PCI-Vulcan-AHCI-PCI-bar-fix-for-Broadcom-Vulcan-earl.patch \
-            file://0002-ahci-thunderx2-Fix-for-errata-that-affects-stop-engi.patch \
-            file://0001-efi-Make-efi_rts_work-accessible-to-efi-page-fault-h.patch \
-            file://0001-efi-x86-Handle-page-faults-occurring-while-running-E.patch \
-            file://0001-selftests-change-reboot-flag-location.patch \
-            file://0001-pstore-test-remove-log-directory.patch \
-            file://0001-x86-mttr-Update-only-valid-variable-range-MTRRs.patch \
-           "
+SRC_URI += "file://0002-PCI-Vulcan-AHCI-PCI-bar-fix-for-Broadcom-Vulcan-earl.patch \
+            file://0003-serial-SPCR-check-bit-width-for-the-16550-UART.patch \
+            file://0004-x86-mttr-Update-only-valid-variable-range-MTRRs.patch \
+            file://0005-ahci-thunderx2-Fix-for-errata-that-affects-stop-engi.patch \
+            file://0006-x86-efi-Fix-boot-crash-by-mapping-EFI-memmap-entries.patch \
+            "
 
 COMMON_CFG_x86 = " file://qemux86/modules.cfg \
                    file://qemux86/display.cfg \
@@ -127,13 +121,13 @@ KCONFIG_MODE = 'alldefconfig'
 KBUILD_DEFCONFIG = "defconfig"
 KBUILD_DEFCONFIG_x86 = "i386_defconfig"
 KBUILD_DEFCONFIG_x86-64 = "x86_64_defconfig"
-LINUX_VERSION = "4.19"
+LINUX_VERSION = "5.10"
 LINUX_VERSION_EXTENSION = "-luv"
 
 # Override SRCREV to point to a different commit in a bbappend file to
 # build a different release of the Linux kernel.
 # tag: v4.19 84df9525b0c27f3ebc2ebb1864fa62a97fdedb7d
-SRCREV = "84df9525b0c27f3ebc2ebb1864fa62a97fdedb7d"
+SRCREV = "2c85ebc57b3e1817b6ce1a6b703928e113a90442"
 
 PR = "r5"
 PV = "${LINUX_VERSION}+git${SRCPV}"

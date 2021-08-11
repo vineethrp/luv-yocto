@@ -1,7 +1,7 @@
-From 6d1feb1fccc3bdf99364ed83e950a70b3c2d7963 Mon Sep 17 00:00:00 2001
+From baa6aa7e1e00f1d18f90bc187699fa7e15e98927 Mon Sep 17 00:00:00 2001
 From: Jayachandran C <jnair@caviumnetworks.com>
 Date: Fri, 10 Mar 2017 10:04:52 +0000
-Subject: [PATCH 2/2] ahci: thunderx2: Fix for errata that affects stop engine
+Subject: [PATCH 5/6] ahci: thunderx2: Fix for errata that affects stop engine
 
 Apply workaround for this errata:
   Synopsis: Resetting PxCMD.ST may hang the SATA device
@@ -33,16 +33,16 @@ Signed-off-by: Jayachandran C <jnair@caviumnetworks.com>
  1 file changed, 14 insertions(+)
 
 diff --git a/drivers/ata/libahci.c b/drivers/ata/libahci.c
-index 3159f9e..5f64275 100644
+index ed90609ccb44..e426f539b380 100644
 --- a/drivers/ata/libahci.c
 +++ b/drivers/ata/libahci.c
-@@ -664,6 +664,20 @@ int ahci_stop_engine(struct ata_port *ap)
+@@ -671,6 +671,20 @@ int ahci_stop_engine(struct ata_port *ap)
  	tmp &= ~PORT_CMD_START;
  	writel(tmp, port_mmio + PORT_CMD);
  
 +#ifdef CONFIG_ARM64
 +	/* Rev Ax of Cavium CN99XX needs a hack for port stop */
-+	if (MIDR_IS_CPU_MODEL_RANGE(read_cpuid_id(),
++	if (midr_is_cpu_model_range(read_cpuid_id(),
 +			MIDR_CPU_MODEL(ARM_CPU_IMP_BRCM, BRCM_CPU_PART_VULCAN),
 +			MIDR_CPU_VAR_REV(0, 0),
 +			MIDR_CPU_VAR_REV(0, MIDR_REVISION_MASK))) {
@@ -58,5 +58,5 @@ index 3159f9e..5f64275 100644
  	tmp = ata_wait_register(ap, port_mmio + PORT_CMD,
  				PORT_CMD_LIST_ON, PORT_CMD_LIST_ON, 1, 500);
 -- 
-1.8.3.1
+2.25.1
 

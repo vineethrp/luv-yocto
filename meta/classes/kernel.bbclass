@@ -339,6 +339,10 @@ do_compile_kernelmodules() {
 		# other kernel modules and will look at this
 		# file to do symbol lookups
 		cp ${B}/Module.symvers ${STAGING_KERNEL_BUILDDIR}/
+        if [ -e ${B}/scripts/module.lds ]; then
+            mkdir -p ${STAGING_KERNEL_BUILDDIR}/scripts
+            cp ${B}/scripts/module.lds ${STAGING_KERNEL_BUILDDIR}/scripts/
+        fi
 	else
 		bbnote "no modules to compile"
 	fi
@@ -445,7 +449,7 @@ do_shared_workdir () {
 
 	# Copy files required for module builds
 	cp System.map $kerneldir/System.map-${KERNEL_VERSION}
-	cp Module.symvers $kerneldir/
+	[ -e Module.symvers ] && cp Module.symvers $kerneldir/
 	cp .config $kerneldir/
 	mkdir -p $kerneldir/include/config
 	cp include/config/kernel.release $kerneldir/include/config/kernel.release
@@ -457,6 +461,10 @@ do_shared_workdir () {
 	elif [ -e signing_key.priv ]; then
 		cp signing_key.* $kerneldir/
 	fi
+    if [ -e ./scripts/module.lds ]; then
+        mkdir -p $kerneldir/scripts
+        cp ./scripts/module.lds $kerneldir/scripts/
+    fi
 
 	# We can also copy over all the generated files and avoid special cases
 	# like version.h, but we've opted to keep this small until file creep starts
@@ -492,7 +500,7 @@ sysroot_stage_all () {
 	:
 }
 
-KERNEL_CONFIG_COMMAND ?= "oe_runmake_call -C ${S} CC="${KERNEL_CC}" O=${B} oldnoconfig"
+KERNEL_CONFIG_COMMAND ?= "oe_runmake_call -C ${S} CC="${KERNEL_CC}" O=${B} olddefconfig"
 
 python check_oldest_kernel() {
     oldest_kernel = d.getVar('OLDEST_KERNEL')

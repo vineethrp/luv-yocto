@@ -2,7 +2,7 @@ DESCRIPTION = "nvdimm tests"
 HOMEPAGE = "https://www.kernel.org/pub/linux/kernel"
 SECTION = "base"
 LICENSE = "GPLv2"
-LIC_FILES_CHKSUM = "file://${STAGING_KERNEL_DIR}/COPYING;md5=bbea815ee2795b2f4230826c0c6b8814"
+LIC_FILES_CHKSUM = "file://${STAGING_KERNEL_DIR}/COPYING;md5=6bc538ed5bd9a7fc9398086aedcd7e46"
 KBRANCH="stable"
 
 inherit module

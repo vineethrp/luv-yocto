@@ -1,7 +1,7 @@
-From b84de8808b34a162cc803bb0e84faa080923edc5 Mon Sep 17 00:00:00 2001
+From 4f6cd99770e80448c39ed5691bf3a7438fd8bef6 Mon Sep 17 00:00:00 2001
 From: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
 Date: Tue, 21 Nov 2017 17:30:59 -0800
-Subject: [PATCH] x86/mttr: Update only valid variable-range MTRRs
+Subject: [PATCH 4/6] x86/mttr: Update only valid variable-range MTRRs
 
 Both the Intel 64 and IA-32 Architectures Software Developer's Manual Vol.
 3 in section 11.11 and the AMD Architecture Programmer's Manual Vol. 2 in
@@ -36,14 +36,14 @@ Cc: Ruiyu Ni <ruiyu.ni@intel.com>
 Reported-by: Bin Song <binx.song@intel.com>
 Signed-off-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
 ---
- arch/x86/kernel/cpu/mtrr/generic.c | 45 ++++++++++++++++++++++++++++++--------
+ arch/x86/kernel/cpu/mtrr/generic.c | 45 ++++++++++++++++++++++++------
  1 file changed, 36 insertions(+), 9 deletions(-)
 
 diff --git a/arch/x86/kernel/cpu/mtrr/generic.c b/arch/x86/kernel/cpu/mtrr/generic.c
-index fdc5521..581f839 100644
+index a29997e6cf9e..84b287142767 100644
 --- a/arch/x86/kernel/cpu/mtrr/generic.c
 +++ b/arch/x86/kernel/cpu/mtrr/generic.c
-@@ -659,23 +659,50 @@ static bool set_mtrr_var_ranges(unsigned int index, struct mtrr_var_range *vr)
+@@ -660,23 +660,50 @@ static bool set_mtrr_var_ranges(unsigned int index, struct mtrr_var_range *vr)
  	unsigned int lo, hi;
  	bool changed = false;
  
@@ -104,5 +104,5 @@ index fdc5521..581f839 100644
  }
  
 -- 
-2.7.4
+2.25.1
 
