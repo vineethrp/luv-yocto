@@ -2,7 +2,7 @@ DESCRIPTION = "pstore tests"
 HOMEPAGE = "https://www.kernel.org/pub/linux/kernel"
 SECTION = "base"
 LICENSE = "GPLv2"
-LIC_FILES_CHKSUM = "file://${STAGING_KERNEL_DIR}/COPYING;md5=bbea815ee2795b2f4230826c0c6b8814"
+LIC_FILES_CHKSUM = "file://${STAGING_KERNEL_DIR}/COPYING;md5=6bc538ed5bd9a7fc9398086aedcd7e46"
 KBRANCH="stable"
 
 # Picking up matts branch
@@ -14,6 +14,9 @@ SRC_URI = "file://pstore-test-runner \
 DEPENDS_class-native += "qemu-native"
 inherit autotools luv-test
 DEPENDS = "linux-luv"
+
+do_unpack[depends] += "virtual/kernel:do_shared_workdir"
+do_patch[depends] += "virtual/kernel:do_shared_workdir"
 
 # If the LUV_STORAGE variable in luv_test_manager.bb ever changes,
 # the reboot_dir variable should be changed accordingly
