@@ -24,7 +24,6 @@ EXTRA_OECONF = " \
     --localstatedir=${localstatedir} \
     --with-confsuffix=/${BPN} \
     --disable-strip \
-    --disable-werror \
     --target-list=${@get_qemu_target_list(d)} \
     --extra-cflags='${CFLAGS}' \
     ${PACKAGECONFIG_CONFARGS} \

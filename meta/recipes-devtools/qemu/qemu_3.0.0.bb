@@ -21,6 +21,10 @@ SRC_URI = "https://download.qemu.org/${BPN}-${PV}.tar.xz \
            file://0009-apic-fixup-fallthrough-to-PIC.patch \
            file://0010-linux-user-Fix-webkitgtk-hangs-on-32-bit-x86-target.patch \
            file://0011-Revert-linux-user-fix-mmap-munmap-mprotect-mremap-sh.patch \
+           file://0001-gcc9-Disable-Waddress-of-packed-member-warning.patch \
+           file://0001-linux-user-rename-gettid.patch \
+           file://0001-linux-user-fix-to-handle-variably-sized-SIOCGSTAMP-w.patch \
+           file://0011-linux-user-remove-host-stime-syscall.patch \
            file://CVE-2018-15746.patch \
            file://CVE-2018-17958.patch \
            file://CVE-2018-17962.patch \

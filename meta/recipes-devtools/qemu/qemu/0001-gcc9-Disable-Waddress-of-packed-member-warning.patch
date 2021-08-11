@@ -1,0 +1,63 @@
+From 9b8b4a9d3ef8f26ab1e506d05146dc69e0925c09 Mon Sep 17 00:00:00 2001
+From: Vineeth Pillai <viremana@linux.microsoft.com>
+Date: Tue, 10 Aug 2021 15:59:40 +0000
+Subject: [PATCH] gcc9: Disable -Waddress-of-packed-member warning
+
+---
+ hw/scsi/virtio-scsi.c | 7 +++++++
+ target/i386/kvm.c     | 7 +++++++
+ 2 files changed, 14 insertions(+)
+
+diff --git a/hw/scsi/virtio-scsi.c b/hw/scsi/virtio-scsi.c
+index 5a3057d1f8..cc87deea02 100644
+--- a/hw/scsi/virtio-scsi.c
++++ b/hw/scsi/virtio-scsi.c
+@@ -247,6 +247,10 @@ static inline void virtio_scsi_ctx_check(VirtIOSCSI *s, SCSIDevice *d)
+     }
+ }
+ 
++#if __GNUC__ >= 9
++#pragma GCC diagnostic push
++#pragma GCC diagnostic ignored "-Waddress-of-packed-member"
++#endif
+ /* Return 0 if the request is ready to be completed and return to guest;
+  * -EINPROGRESS if the request is submitted and will be completed later, in the
+  *  case of async cancellation. */
+@@ -382,6 +386,9 @@ fail:
+     req->resp.tmf.response = VIRTIO_SCSI_S_BAD_TARGET;
+     return ret;
+ }
++#if __GNUC__ >= 9
++#pragma GCC diagnostic pop
++#endif
+ 
+ static void virtio_scsi_handle_ctrl_req(VirtIOSCSI *s, VirtIOSCSIReq *req)
+ {
+diff --git a/target/i386/kvm.c b/target/i386/kvm.c
+index 9313602d3d..6b0989cec3 100644
+--- a/target/i386/kvm.c
++++ b/target/i386/kvm.c
+@@ -786,6 +786,10 @@ static Error *invtsc_mig_blocker;
+ 
+ #define KVM_MAX_CPUID_ENTRIES  100
+ 
++#if __GNUC__ >= 9
++#pragma GCC diagnostic push
++#pragma GCC diagnostic ignored "-Waddress-of-packed-member"
++#endif
+ int kvm_arch_init_vcpu(CPUState *cs)
+ {
+     struct {
+@@ -1208,6 +1212,9 @@ int kvm_arch_init_vcpu(CPUState *cs)
+     migrate_del_blocker(invtsc_mig_blocker);
+     return r;
+ }
++#if __GNUC__ >= 9
++#pragma GCC diagnostic pop
++#endif
+ 
+ void kvm_arch_reset_vcpu(X86CPU *cpu)
+ {
+-- 
+2.25.1
+
